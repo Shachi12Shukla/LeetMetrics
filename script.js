@@ -32,22 +32,41 @@ document.addEventListener("DOMContentLoaded" , function() {
     
     // 4 - Fetch User Data from the API Key
     async function fetchUserDetails(username) {
-       const url = `https://leetcode.com/graphql/`;
-
+       
         try{
-
             // Change 'Search' to 'Searching'
             searchButton.textContent = 'Searching ..';
             // *** New thing** - Search Button disabled
             searchButton.disabled = true;   // *** new ***
+            
+            const targeturl = `https://leetcode.com/graphql/`;
+            const myHeaders = new Headers();
+            myHeaders.append("content-type", "application/JSON");
 
-            const response = await fetch(url);
-            if(!(response.ok)){  // ***NEW*** OR response === 'OK' OR response.status === 200 
-                throw new Error('Unable to fetch the user details');
+            const graphql = JSON.stringify( {
+                query: "\n    query userSessionProgress($username: String!) {\n  allQuestionsCount {\n    difficulty\n    count\n  }matchedUser(username: $username) {\n    submitStats {\n      acSubmissionNum {\n        difficulty\n        count\n        submissions\n      }\n      totalSubmissionNum {\n        difficulty\n        count\n        submissions\n      }\n    }\n  }\n}\n    " ,
+                variables: {"username": `${username}`} 
+            })
+
+            // converted the 'graphql' object from js object -> JSON object .
+            
+
+            const requestOptions = {
+                method : "POST" ,
+                headers : myHeaders ,
+                body : graphql ,
+                redirect : "follow"
+            };
+
+            const response = await fetch(targeturl , requestOptions)
+            
+            if(!response.ok){
+                throw new Error("Unable to fetch the user details");
             }
 
+            // convert back the JSON object to JS object
             const data = await response.json();
-            console.log('Data we got ', data);
+            console.log("Logging data:" , data);
         }
 
         catch(error){
