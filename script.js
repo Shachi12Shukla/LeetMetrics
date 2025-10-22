@@ -22,8 +22,8 @@ document.addEventListener("DOMContentLoaded" , function() {
             alert("Username should not be empty");
         }
 
-        const regex = /^[a-zA-Z0-9_-]{1,15}$/;
-        const isMatching = regex.test(username);
+        const regex = /^[a-zA-Z0-9_-]{1,15}$/;  // *** new ***
+        const isMatching = regex.test(username);  // *** new ***
         if(!isMatching){
             alert('Invalid username !');
         }
@@ -39,10 +39,10 @@ document.addEventListener("DOMContentLoaded" , function() {
             // Change 'Search' to 'Searching'
             searchButton.textContent = 'Searching ..';
             // *** New thing** - Search Button disabled
-            searchButton.disabled = true;
+            searchButton.disabled = true;   // *** new ***
 
             const response = await fetch(url);
-            if(response.ok){
+            if(!(response.ok)){  // ***NEW*** OR response === 'OK' OR response.status === 200 
                 throw new Error('Unable to fetch the user details');
             }
 
@@ -52,11 +52,13 @@ document.addEventListener("DOMContentLoaded" , function() {
 
         catch(error){
             statsCont.innerHTML = `<p>No data found</p>`;
+            console.log("ERROR---" , error)
         }
 
         finally{
             searchButton.textContent = 'Search';
             searchButton.disabled = false;
+            // searchButton.enabled = true;  WON'T WORK
         }
     }
 
