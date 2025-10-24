@@ -14,24 +14,29 @@ document.addEventListener("DOMContentLoaded" , function() {
     const hardlabel = document.querySelector('#hard-label');
 
     const statsCard = document.querySelector('.stats-card');
+    // remember the container's initial display so we can restore it later
+    const initialStatsDisplay = getComputedStyle(statsCont).display;  // *** NEW ***
+    console.log("initial display" , initialStatsDisplay);
      
     // 3 - Check Username based on regex. Generate regex using chatgpt
     function checkUsername(username){
 
         if(username.trim() === ''){
             alert("Username should not be empty");
+            return;
         }
 
         const regex = /^[a-zA-Z0-9_-]{1,15}$/;  // *** new ***
         const isMatching = regex.test(username);  // *** new ***
-        if(!isMatching){
+    
+        if((!isMatching)){
             alert('Invalid username !');
         }
         return isMatching;
     }
     
     // 8 - add a flag to track ongoing fetch
-    let isFetching = false;
+    // let isFetching = false;
 
     // 4 - Fetch User Data 
     async function fetchUserDetails(username) {
@@ -40,8 +45,8 @@ document.addEventListener("DOMContentLoaded" , function() {
             
             // 8
             // avoid concurrent fetches
-            if (isFetching) return;
-            isFetching = true;
+            // if (isFetching) return;
+            // isFetching = true;
 
 
             // Change 'Search' to 'Searching'
@@ -50,8 +55,9 @@ document.addEventListener("DOMContentLoaded" , function() {
             searchButton.disabled = true;   // *** new ***
 
             // 8- hide stats container while fetching
-            statsCont.style.visibility = 'hidden';  // ** NEW **
+            // statsCont.style.visibility = 'hidden';  // ** NEW **
             // statsCont.setProperty("visibility" , hidden); WON'T WORK
+            statsCont.style.display = 'none';  // ** NEW **
  
             const proxyUrl = `https://cors-anywhere.herokuapp.com/`;
             const targeturl = `https://leetcode.com/graphql/`;
@@ -97,9 +103,9 @@ document.addEventListener("DOMContentLoaded" , function() {
             searchButton.disabled = false;
             // searchButton.enabled = true;  WON'T WORK
 
-            isFetching = false;
+            // isFetching = false;
             // restore visibility after fetch completes
-            statsCont.style.visibility = 'visible';
+            statsCont.style.display = 'block';
 
         }
     }
@@ -164,10 +170,10 @@ document.addEventListener("DOMContentLoaded" , function() {
     searchButton.addEventListener('click' , function() {
 
         // prevent starting a fetch when one is already running
-        if (isFetching) {
-            alert('Search already in progress. Please wait.');
-            return;
-        }
+        // if (isFetching) {
+        //     alert('Search already in progress. Please wait.');
+        //     return;
+        // }
 
         const username = usernameInpt.value;
         console.log(`this username logged in - ${username}`);
